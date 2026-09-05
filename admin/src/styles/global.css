@@ -1,0 +1,72 @@
+@import "./tokens.css";
+@import "./layout.css";
+@import "./components.css";
+@import "./field-modal.css";
+@import "./intro.css";
+@import "./setup.css";
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* This codebase measures lengths in rem, with 1rem = 10px at 100% scale.
+   A design-spec px therefore converts by moving the decimal point (13.5px = 1.35rem).
+   Declared in %, so a user-enlarged browser base font size scales everything with it. */
+html { font-size: calc(62.5% * var(--ui-scale)); }
+
+html, body, #root { height: 100%; }
+body {
+  font-family: var(--font-sans);
+  font-size: 1.4rem;
+  letter-spacing: -0.005em;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+a { color: var(--accent); text-decoration: none; }
+/* Links used as buttons (.btn) skip the global link hover color — the .btn palette wins */
+a:hover:not(.btn) { color: var(--accent-hover); }
+/* Component background rule (2026-09-01): the tier-2 panel and tier-3 canvas are surface-2,
+   so bare form fields default to WHITE — a gray field on the gray canvas reads as disabled.
+   Gray (surface-2) fields are reserved for white containers, see the override in components.css. */
+input, select, textarea {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 0.1rem solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 0 1.2rem;
+  height: 4.2rem;
+  font-size: 1.35rem;
+}
+textarea { height: auto; padding: 1rem 1.2rem; }
+/* Dropdowns follow the handoff spec (42px field + 12px muted chevron), not the native widget.
+   The chevron color approximates --text-3 in both themes (data URIs cannot read CSS vars). */
+select {
+  appearance: none;
+  padding-right: 3.4rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none' stroke='%238f939e' stroke-width='1.6'%3E%3Cpath d='M3 4.6 6 7.6 9 4.6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1.2rem center;
+  background-size: 1.2rem;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  background-color: var(--surface); /* -color: the shorthand would erase the select chevron */
+  border-color: var(--accent);
+  box-shadow: 0 0 0 0.3rem var(--accent-soft);
+}
+code { font-family: var(--font-mono); font-size: 0.92em; }
+h1 { font-size: 2.5rem; font-weight: 650; letter-spacing: -0.02em; }
+h3 { font-size: 1.35rem; font-weight: 600; }
+.muted { color: var(--text-3); font-size: 1.25rem; }
+.mono { font-family: var(--font-mono); font-size: 1.25rem; }
+.center-screen {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+}
+.center-block { display: flex; justify-content: center; padding: var(--space-7); }
+.row-gap { display: flex; align-items: center; gap: var(--space-2); }
+.row-gap.wrap { flex-wrap: wrap; }
