@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.env.local
+*.log
+.prina-dev-db/
+# 로컬 스토리지 어댑터가 업로드 파일을 쓰는 곳 (S3 미설정 시 기본값, storage/index.ts)
+.prina-storage/
+coverage/
+admin-dist/
+docker-compose.override.yml
