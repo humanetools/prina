@@ -1,0 +1,121 @@
+/**
+ * Prina design tokens — kept in sync with the Claude Design output (design/tokens.css). Single source.
+ * oklch light/dark themes. White-label (T8.5) overrides these variables via env injection.
+ * No hardcoded values in components — always these variables.
+ */
+
+/* Whole-UI scale — the single --ui-scale below moves fonts, spacing, sizes and borders in
+   the same ratio. On :root rather than [data-theme] so it applies before the theme attaches
+   (the very first boot frame). */
+:root {
+  --ui-scale: 1.1;
+}
+
+[data-theme] {
+  --bg: oklch(0.965 0.003 264);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.982 0.002 264);
+  --surface-3: oklch(0.955 0.004 264);
+  --border: oklch(0.905 0.005 264);
+  --border-strong: oklch(0.83 0.008 264);
+  --text: oklch(0.26 0.012 264);
+  --text-2: oklch(0.5 0.012 264);
+  --text-3: oklch(0.64 0.01 264);
+  --accent: oklch(0.635 0.185 258);
+  --accent-hover: oklch(0.575 0.19 258);
+  --accent-soft: oklch(0.962 0.038 258);
+  --accent-on: oklch(1 0 0);
+  --ai: oklch(0.6 0.115 258);
+  --ai-soft: oklch(0.966 0.028 258);
+  --draft: oklch(0.54 0.008 264);     --draft-bg: oklch(0.955 0.003 264);
+  --review: oklch(0.58 0.075 72);     --review-bg: oklch(0.965 0.026 78);
+  --approved: oklch(0.56 0.072 252);  --approved-bg: oklch(0.966 0.02 252);
+  --published: oklch(0.53 0.068 152); --published-bg: oklch(0.962 0.026 152);
+  --danger: oklch(0.56 0.11 22);      --danger-bg: oklch(0.966 0.024 22);
+  --font-sans: "Source Sans 3", "Noto Sans KR", system-ui, sans-serif;
+  --font-mono: "Source Code Pro", ui-monospace, monospace;
+  --r: 0.8rem; --r-sm: 0.5rem; --r-pill: 99.9rem;
+  --shadow: 0 0.1rem 0.2rem oklch(0.26 0.01 264 / 0.06), 0 0.8rem 2.4rem oklch(0.26 0.01 264 / 0.06);
+  --sp: 0.8rem;
+
+  /* chip sizes — pill-shaped labels and toggles */
+  --chip-sm-h: 2.2rem;  --chip-sm-px: 0.8rem;  --chip-sm-fs: 1.1rem;   --chip-sm-gap: 0.5rem;
+  --chip-md-h: 2.6rem;  --chip-md-px: 1rem; --chip-md-fs: 1.15rem; --chip-md-gap: 0.6rem;
+
+  /* Shell geometry (design-final values) */
+  --layout-iconbar-w: 7.2rem;
+  --layout-context-w: 26.4rem;
+  --layout-rightpanel-w: 33.6rem;
+  --topbar-h: 6rem;
+
+  /* Spacing scale: 4/8/12/18/22/28/40 */
+  --space-1: 0.4rem; --space-2: 0.8rem; --space-3: 1.2rem; --space-4: 1.8rem;
+  --space-5: 2.2rem; --space-6: 2.8rem; --space-7: 4rem;
+
+  /* Type scale aliases */
+  --text-xs: 1.1rem; --text-sm: 1.25rem; --text-base: 1.35rem;
+  --text-lg: 1.5rem; --text-xl: 2.5rem;
+
+  /* ── Legacy token aliases (transition safety net — new code uses the originals above) ── */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-sunken: var(--surface-3);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-text-secondary: var(--text-2);
+  --color-text-muted: var(--text-3);
+  --color-text-invert: var(--surface);
+  --brand-primary: var(--accent);
+  --brand-primary-hover: var(--accent-hover);
+  --status-draft: var(--draft);         --status-draft-bg: var(--draft-bg);
+  --status-review: var(--review);       --status-review-bg: var(--review-bg);
+  --status-approved: var(--approved);   --status-approved-bg: var(--approved-bg);
+  --status-published: var(--published); --status-published-bg: var(--published-bg);
+  --status-danger: var(--danger);       --status-danger-bg: var(--danger-bg);
+  --actor-human: var(--text-2);
+  --actor-ai: var(--ai);
+  --actor-ai-bg: var(--ai-soft);
+  --score-high: var(--published);
+  --score-mid: var(--review);
+  --score-low: var(--danger);
+  --radius-sm: 0.4rem;
+  --radius-md: var(--r-sm);
+  --radius-lg: var(--r);
+}
+
+[data-theme="dark"] {
+  --bg: oklch(0.175 0.006 264);
+  --surface: oklch(0.225 0.007 264);
+  --surface-2: oklch(0.252 0.008 264);
+  --surface-3: oklch(0.285 0.009 264);
+  --border: oklch(0.315 0.009 264);
+  --border-strong: oklch(0.4 0.012 264);
+  --text: oklch(0.945 0.004 264);
+  --text-2: oklch(0.735 0.009 264);
+  --text-3: oklch(0.6 0.01 264);
+  --accent: oklch(0.7 0.13 258);
+  --accent-hover: oklch(0.78 0.12 258);
+  --accent-soft: oklch(0.305 0.06 258);
+  --accent-on: oklch(0.17 0.02 258);
+  --ai: oklch(0.72 0.11 258);
+  --ai-soft: oklch(0.3 0.055 258);
+  --draft: oklch(0.72 0.01 264);      --draft-bg: oklch(0.29 0.006 264);
+  --review: oklch(0.78 0.12 78);      --review-bg: oklch(0.3 0.05 70);
+  --approved: oklch(0.74 0.12 252);   --approved-bg: oklch(0.3 0.055 252);
+  --published: oklch(0.75 0.13 152);  --published-bg: oklch(0.29 0.05 152);
+  --danger: oklch(0.72 0.16 22);      --danger-bg: oklch(0.31 0.07 22);
+  --shadow: 0 0.1rem 0.2rem oklch(0 0 0 / 0.3), 0 1rem 2.8rem oklch(0 0 0 / 0.35);
+}
+
+/* Scrollbars appear only when the pointer enters (design rule "Scrollbars on demand") */
+* { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+*:hover { scrollbar-color: oklch(0.64 0.01 264 / 0.4) transparent; }
+*::-webkit-scrollbar { width: 0.8rem; height: 0.8rem; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: transparent; border-radius: 9.9rem; border: 0.2rem solid transparent; background-clip: padding-box; transition: background-color 0.2s; }
+*:hover::-webkit-scrollbar-thumb { background: oklch(0.64 0.01 264 / 0.38); background-clip: padding-box; }
+*::-webkit-scrollbar-thumb:hover { background: oklch(0.5 0.012 264 / 0.6); background-clip: padding-box; }
+
+@keyframes sectionIn { from { opacity: 0; transform: translateY(-0.6rem); } to { opacity: 1; transform: none; } }
+@keyframes barIn { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: none; } }
