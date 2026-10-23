@@ -1,0 +1,2 @@
+ALTER TABLE "taxonomies" ADD COLUMN "attribute_fields" jsonb DEFAULT '[]'::jsonb NOT NULL;--> statement-breakpoint
+ALTER TABLE "taxonomy_nodes" ADD COLUMN "attributes" jsonb DEFAULT '{}'::jsonb NOT NULL;
