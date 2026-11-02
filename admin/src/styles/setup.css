@@ -1,0 +1,223 @@
+/**
+ * Install wizard (design: Prina Install.dc.html) — step rail on the left, stage cards right.
+ * The handoff is drawn at 110%, so dividing px by 11 yields rem directly (25.3px → 2.3rem).
+ * Buttons, inputs and chips reuse the shared classes (.btn/.btn-primary, .field, .chip-toggle);
+ * only structure unique to this screen lives here.
+ */
+
+@keyframes inStepIn { from { opacity: 0; transform: translateY(1.4rem); } to { opacity: 1; transform: none; } }
+
+.setup-shell {
+  flex: 1; min-width: 0; height: 100%;
+  display: grid; grid-template-columns: 38.4rem 1fr;
+  background: var(--bg);
+}
+
+/* ── Left rail ────────────────────────────────────────── */
+
+.setup-rail {
+  display: flex; flex-direction: column;
+  padding: 3.2rem 3rem;
+  background: var(--surface);
+  border-right: 0.1rem solid var(--border);
+}
+.setup-brand { display: flex; align-items: center; gap: 1.9rem; }
+.setup-brand-word { font-size: 3rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1; }
+.setup-rail-title {
+  margin-top: 5.3rem;
+  font-size: 2.3rem; font-weight: 650; letter-spacing: -0.024em; line-height: 1.25;
+}
+
+.setup-steps { position: relative; margin-top: 1.1rem; }
+.setup-step {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 3.2rem 1fr; align-items: center;
+  column-gap: 1.2rem;
+  width: 100%; padding: 0.9rem 1.2rem 0.9rem 0; margin-bottom: 0.4rem;
+  border: 0; background: transparent; text-align: left;
+}
+/* Step connector — runs behind the dot to the next row; passed segments fill with accent */
+.setup-step:not(:last-child)::before {
+  content: "";
+  position: absolute; z-index: 0;
+  left: 1.5rem; top: 4.3rem; bottom: -0.5rem;
+  width: 0.14rem; border-radius: 0.2rem;
+  background: var(--border);
+}
+.setup-step.done::before { background: var(--accent); }
+.setup-step-dot {
+  position: relative; z-index: 2;
+  display: grid; place-items: center;
+  width: 3rem; height: 3rem;
+  border-radius: 0.9rem;
+  font-family: var(--font-mono); font-size: 1.2rem; font-weight: 600;
+  background: var(--surface-3); color: var(--text-3);
+  border: 0.1rem solid var(--border);
+  transition: all 0.25s;
+}
+.setup-step.done .setup-step-dot {
+  background: var(--accent); color: var(--accent-on); border-color: var(--accent);
+}
+.setup-step.current .setup-step-dot {
+  background: var(--accent-soft); color: var(--accent); border: 0.15rem solid var(--accent);
+}
+.setup-step-label {
+  font-size: 1.35rem; font-weight: 500; letter-spacing: -0.012em;
+  color: var(--text-3);
+}
+.setup-step.done .setup-step-label { color: var(--text-2); }
+.setup-step.current .setup-step-label { color: var(--text); font-weight: 650; }
+.setup-step-hint { grid-column: 2; font-size: 1.2rem; color: var(--accent); }
+/* Completed steps that can be revisited */
+.setup-step.revisit { cursor: pointer; border-radius: var(--r-sm); }
+.setup-step.revisit:hover .setup-step-label { color: var(--text); }
+.setup-step.revisit:hover .setup-step-dot { border-color: var(--accent); }
+
+/* ── Right body ───────────────────────────────────────── */
+
+.setup-main {
+  position: relative; min-width: 0; overflow-y: auto;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 14.8rem 4rem 5.6rem;
+}
+/* Progress counter — 01 / 05 */
+.setup-counter {
+  position: absolute; right: 3rem; top: 3rem;
+  display: flex; align-items: baseline; gap: 0.6rem;
+  font-family: var(--font-mono); font-size: 1.2rem; font-weight: 500; letter-spacing: 0.02em;
+  color: var(--text-3);
+}
+.setup-counter b { font-weight: 500; color: var(--border-strong); }
+
+.setup-body { width: 100%; max-width: 62rem; animation: inStepIn 0.55s cubic-bezier(0.16, 0.9, 0.2, 1) both; }
+.setup-body h2 {
+  margin: 0;
+  font-size: 2.3rem; font-weight: 650; letter-spacing: -0.024em; line-height: 1.25;
+}
+.setup-card {
+  margin-top: 2rem; padding: 2.4rem;
+  border: 0.1rem solid var(--border); border-radius: var(--r);
+  background: var(--surface);
+  display: flex; flex-direction: column; gap: 1.8rem;
+}
+.setup-actions { margin-top: 2.4rem; display: flex; align-items: center; gap: 1.2rem; }
+.setup-actions .setup-block-msg { font-size: 1.25rem; color: var(--text-3); }
+/* Spacing between multiple cards — the card's own margin-top fits the first, so siblings only */
+.setup-card + .setup-card { margin-top: 1.2rem; }
+.setup-section-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.5rem; font-weight: 650; letter-spacing: -0.015em;
+}
+
+/* ── Password strength ────────────────────────────────── */
+
+.pw-meter { display: flex; gap: 0.5rem; margin-top: 0.2rem; }
+.pw-tick { flex: 1; height: 0.3rem; border-radius: 0.2rem; background: var(--border); transition: background 0.25s; }
+.pw-grade { font-size: 1.2rem; font-weight: 600; }
+
+/* ── Completion summary ───────────────────────────────── */
+
+.setup-ready {
+  display: flex; align-items: center; gap: 1.4rem;
+  padding-bottom: 2.2rem; border-bottom: 0.1rem solid var(--surface-3);
+}
+.setup-ready-title { font-size: 1.5rem; font-weight: 650; letter-spacing: -0.018em; }
+.setup-summary-row {
+  display: grid; grid-template-columns: 15rem 1fr; gap: 1.6rem;
+  padding: 1.1rem 0; border-bottom: 0.1rem solid var(--surface-3);
+  font-size: 1.35rem;
+}
+.setup-summary-row:last-child { border-bottom: 0; }
+.setup-summary-row dt { color: var(--text-3); }
+.setup-summary-row dd { color: var(--text); }
+
+/* ── Storage guidance ─────────────────────────────────── */
+
+.setup-note {
+  padding: 1.3rem 1.4rem; background: var(--surface-2); border-radius: var(--r-sm);
+  font-size: 1.25rem; line-height: 1.6; color: var(--text-2); text-wrap: pretty;
+}
+.setup-note.ok { background: var(--published-bg); color: var(--published); }
+.setup-note strong { color: var(--text); }
+.setup-note.ok strong { color: var(--published); }
+
+/* ── Public address provisioning (last onboarding step) ──
+   Steps stack vertically; passed steps fold into one line. Buttons/inputs/checks are shared classes. */
+
+.tn-card { gap: 0; }
+.tn-offer { display: flex; align-items: flex-start; gap: 1.2rem; cursor: pointer; }
+.tn-offer > span { display: flex; flex-direction: column; gap: 0.4rem; }
+.tn-offer-title { font-size: 1.4rem; font-weight: 650; letter-spacing: -0.012em; }
+.tn-offer-desc { font-size: 1.25rem; line-height: 1.55; color: var(--text-2); text-wrap: pretty; }
+.tn-offer code { font-size: 1.15rem; }
+
+.tn-flow {
+  margin-top: 1.8rem; padding-top: 1.8rem;
+  border-top: 0.1rem solid var(--border);
+  display: flex; flex-direction: column; gap: 1.2rem;
+}
+.tn-step { display: flex; flex-direction: column; gap: 0.8rem; }
+.tn-step-head {
+  display: flex; align-items: center; gap: 1rem;
+  font-size: 1.3rem; font-weight: 600; color: var(--text-3);
+}
+.tn-step.on .tn-step-head { color: var(--text); }
+.tn-step-num {
+  display: grid; place-items: center; flex: none;
+  width: 2.2rem; height: 2.2rem; border-radius: 0.7rem;
+  font-family: var(--font-mono); font-size: 1.1rem; font-weight: 600;
+  background: var(--surface-3); color: var(--text-3);
+}
+.tn-step.on .tn-step-num { background: var(--accent); color: var(--accent-on); }
+.tn-step-num.ok { background: var(--published); color: var(--accent-on); }
+/* Passed steps show only their result, one line */
+.tn-step-done { margin-left: 3.2rem; font-size: 1.25rem; color: var(--text-2); }
+.tn-step-body {
+  margin-left: 3.2rem; display: flex; flex-direction: column; gap: 1rem;
+  align-items: flex-start;
+}
+.tn-step-body .field { width: 100%; max-width: 34rem; }
+.tn-step-body input.invalid { border-color: var(--danger); }
+
+.tn-hint { font-size: 1.2rem; line-height: 1.55; color: var(--text-3); text-wrap: pretty; }
+.tn-hint.danger { color: var(--danger); }
+.tn-hint.ok { color: var(--published); }
+
+.tn-code-row { display: flex; align-items: center; gap: 0.8rem; }
+.tn-code-boxes { display: flex; gap: 0.8rem; }
+.tn-code {
+  width: 4.8rem; height: 5.2rem; padding: 0;
+  text-align: center; font-size: 2.2rem; font-weight: 600;
+}
+
+/* Assistant shortcuts — right under the issued address */
+.tn-assistants { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+.tn-assistant {
+  display: inline-flex; align-items: center; gap: 0.8rem;
+  height: 4rem; padding: 0 1.4rem;
+  border: 0.1rem solid var(--border); border-radius: var(--r);
+  background: var(--surface); color: var(--text);
+  font-size: 1.3rem; font-weight: 550;
+}
+.tn-assistant:hover { border-color: var(--border-strong); color: var(--text); }
+.tn-assistant svg { color: var(--text-3); }
+/* Vendor marks (lobe-icons, MIT) — original brand colors as-is */
+.tn-assistant-logo { width: 1.9rem; height: 1.9rem; flex: none; }
+/* Only OpenAI's mark is monochrome and vanishes on dark backgrounds — invert just then */
+[data-theme="dark"] .tn-assistant-logo.mono { filter: invert(1); }
+
+.tn-sub-row { display: flex; align-items: center; gap: 0; max-width: 34rem; width: 100%; }
+.tn-sub-row input { border-top-right-radius: 0; border-bottom-right-radius: 0; flex: 1; min-width: 0; }
+.tn-sub-suffix {
+  display: flex; align-items: center; height: 4.2rem; padding: 0 1.2rem;
+  border: 0.1rem solid var(--border); border-left: 0;
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  background: var(--surface-2); color: var(--text-3); font-size: 1.3rem;
+}
+
+.tn-copy { display: flex; align-items: center; gap: 0.8rem; width: 100%; }
+.tn-copy code {
+  flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap;
+  padding: 1rem 1.2rem; font-size: 1.3rem;
+  background: var(--surface-2); border: 0.1rem solid var(--border); border-radius: var(--r-sm);
+}
