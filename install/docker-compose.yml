@@ -1,0 +1,103 @@
+# Prina OSS installation compose.
+# Differences from the commercial kit: public image, no license, no auto-updater.
+# Manual update: change PRINA_VERSION in .env → docker compose pull && docker compose up -d
+services:
+  postgres:
+    # bundled with pgvector (semantic search — falls back to FTS without it, but bundled by default)
+    image: pgvector/pgvector:0.8.6-pg18
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      POSTGRES_DB: ${POSTGRES_DB:-prina}
+    volumes:
+      # PG18-family images mount at /var/lib/postgresql (not the data subdir — an 18.x change)
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  # S3-compatible storage — RustFS. (MinIO's Docker Hub images minio/minio and minio/mc were
+  # removed in 2026-09, so the kit switched; the service is still named `minio` so the
+  # S3_ENDPOINT default, imgproxy and any override files keep working unchanged.)
+  # To use your own S3, remove minio & minio-init and set the S3_* variables.
+  # Existing installs still running MinIO on the `miniodata` volume: keep MinIO, or migrate the
+  # objects with `aws s3 sync` into a fresh volume — do not point RustFS at a MinIO data directory.
+  minio:
+    image: rustfs/rustfs:1.0.1
+    environment:
+      RUSTFS_ACCESS_KEY: ${S3_ACCESS_KEY:?}
+      RUSTFS_SECRET_KEY: ${S3_SECRET_KEY:?}
+    volumes:
+      - miniodata:/data
+    restart: unless-stopped
+
+  # One-shot bucket creation on first boot (core does not auto-create buckets).
+  # aws-cli is used only as an S3 client against the local RustFS (--endpoint-url) — no AWS
+  # account is involved. The list-buckets retry loop doubles as startup wait.
+  minio-init:
+    image: amazon/aws-cli:2.37.13
+    depends_on:
+      minio:
+        condition: service_started
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        until aws --endpoint-url http://minio:9000 s3api list-buckets >/dev/null 2>&1; do
+          echo "waiting for s3..."; sleep 2
+        done
+        aws --endpoint-url http://minio:9000 s3api head-bucket --bucket "$$BUCKET" 2>/dev/null \
+          || aws --endpoint-url http://minio:9000 s3api create-bucket --bucket "$$BUCKET"
+    environment:
+      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY:?}
+      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_KEY:?}
+      AWS_DEFAULT_REGION: us-east-1
+      BUCKET: ${S3_BUCKET:-prina-assets}
+    restart: "no"
+
+  imgproxy:
+    # Official darthsim/imgproxy:v3.27 with its Brotli libraries replaced by Brotli 1.1.1
+    # (CVE-2026-111497 — no upstream image carries the fix yet). Source: prina-deploy/imgproxy/Dockerfile.
+    image: ghcr.io/humanetools/imgproxy:v3.27.2-brotli1.1.1
+    environment:
+      IMGPROXY_USE_S3: "true"
+      IMGPROXY_S3_ENDPOINT: http://minio:9000
+      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
+      IMGPROXY_KEY: ${IMGPROXY_KEY:?}
+      IMGPROXY_SALT: ${IMGPROXY_SALT:?}
+    restart: unless-stopped
+
+  core:
+    image: ${PRINA_REGISTRY:-ghcr.io/humanetools}/prina:${PRINA_VERSION:?}
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-prina}
+      S3_ENDPOINT: ${S3_ENDPOINT:-http://minio:9000}
+      S3_BUCKET: ${S3_BUCKET:-prina-assets}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      IMGPROXY_URL: http://imgproxy:8080
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "${PRINA_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+    # no curl/wget in the image — health check via node's built-in fetch
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  miniodata:
