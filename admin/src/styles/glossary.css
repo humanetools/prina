@@ -1,0 +1,44 @@
+/* Settings › AI › Glossary (37-IMPL) — an editable grid: one column per locale, one row per term.
+   rem = design px ÷ 10 (see global.css). */
+.glossary-head {
+  display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap;
+  padding: 1.6rem 1.8rem; border-bottom: 0.1rem solid var(--border);
+}
+.glossary-head .btn { display: inline-flex; align-items: center; gap: 0.6rem; margin-top: 0.2rem; }
+.glossary-desc { margin: 0.5rem 0 0; font-size: 1.3rem; color: var(--text-2); line-height: 1.5; max-width: 64rem; }
+
+.glossary-scroll { overflow-x: auto; }
+.glossary-grid { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 56rem; }
+.glossary-grid th, .glossary-grid td {
+  text-align: left; padding: 0 0.8rem; border-bottom: 0.1rem solid var(--border); vertical-align: middle;
+}
+.glossary-grid th {
+  height: 4.6rem; background: var(--surface-2);
+  font-size: 1.25rem; font-weight: 550; color: var(--text); white-space: nowrap;
+}
+.glossary-grid th + th { border-left: 0.1rem solid var(--border); }
+.glossary-grid td + td { border-left: 0.1rem solid var(--border); }
+.glossary-col-name { display: block; }
+.glossary-col-code {
+  display: block; margin-top: 0.1rem;
+  font-family: var(--font-mono); font-size: 1.05rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-3);
+}
+.glossary-grid td { height: 4.4rem; padding: 0.3rem 0.4rem; }
+.glossary-grid td input {
+  width: 100%; height: 3.4rem; padding: 0 0.9rem;
+  border: 0.1rem solid transparent; border-radius: var(--r-sm);
+  background: transparent; font-size: 1.3rem; color: var(--text);
+}
+.glossary-grid td input:hover { border-color: var(--border); }
+.glossary-grid td input:focus { border-color: var(--accent); background: var(--surface); outline: none; box-shadow: 0 0 0 0.3rem var(--accent-soft); }
+.glossary-grid td input::placeholder { color: var(--text-3); font-family: var(--font-mono); font-size: 1.1rem; text-transform: uppercase; letter-spacing: 0.06em; }
+.glossary-num { width: 4.4rem; font-family: var(--font-mono); font-size: 1.15rem; color: var(--text-3); text-align: center !important; }
+.glossary-actions { width: 4.8rem; text-align: right !important; white-space: nowrap; }
+.glossary-empty { padding: 2.4rem 1.8rem !important; color: var(--text-2); font-size: 1.3rem; text-align: center !important; }
+
+.glossary-foot {
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  padding: 1.3rem 1.8rem; border-top: 0.1rem solid var(--border);
+  background: var(--surface-2); border-radius: 0 0 var(--r) var(--r);
+}
+.glossary-grid tr:last-child td { border-bottom: none; }

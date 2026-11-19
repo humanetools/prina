@@ -1,0 +1,14 @@
+# Minimize image build context (T8.6) — keep only what the Dockerfile COPYs
+**/node_modules
+.git
+.github
+.admin-src
+# Release CI's admin dist staging — must not be caught by the COPY admin-dist* glob (IMPL-ee-boundary §C)
+admin-dist-ee
+admin-dist-oss
+dist
+test
+docs
+*.md
+.env*
+!.env.example

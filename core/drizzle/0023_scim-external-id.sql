@@ -1,0 +1,1 @@
+ALTER TABLE "user_identities" ADD COLUMN "external_id" text;
